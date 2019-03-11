@@ -1,4 +1,4 @@
-package main
+package go_graphql
 
 import (
 	"context"
@@ -14,7 +14,21 @@ type queryResolver struct{ *Resolver }
 
 func (r *queryResolver) User(ctx context.Context, id string) (*User, error) {
 	return &User{
-		ID:   "10",
+		ID:   "1",
 		Name: "tanaka",
 	}, nil
+}
+func (r *queryResolver) Users(ctx context.Context) ([]*User, error) {
+	tanaka := &User{
+		ID:   "1",
+		Name: "tanaka",
+	}
+	yamada := &User{
+		ID:   "2",
+		Name: "yamada",
+	}
+	var users = []*User{tanaka, yamada}
+
+	return users, nil
+
 }
