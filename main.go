@@ -30,8 +30,63 @@ var q graphql.ObjectConfig = graphql.ObjectConfig{
 	},
 }
 
+var m graphql.ObjectConfig = graphql.ObjectConfig{
+	Name: "User",
+	Fields: graphql.Fields{
+		"user": &graphql.Field{
+			Type: graphql.NewObject(graphql.ObjectConfig{
+				Name: "Params",
+				Fields: graphql.Fields{
+					"id": &graphql.Field{
+						Type: graphql.Int,
+					},
+					"address": &graphql.Field{
+						Type: graphql.NewObject(graphql.ObjectConfig{
+							Name: "state",
+							Fields: graphql.Fields{
+								"state": &graphql.Field{
+									Type: graphql.String,
+								},
+								"city": &graphql.Field{
+									Type: graphql.String,
+								},
+							},
+						}),
+					},
+				},
+			}),
+			Args: graphql.FieldConfigArgument{
+				"id": &graphql.ArgumentConfig{
+					Type: graphql.Int,
+				},
+			},
+			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+				// ここで更新処理をする
+				return User{
+					Id: 10000,
+					Address: Address{
+						State: "三宿",
+						City:  "世田谷区",
+					},
+				}, nil
+			},
+		},
+	},
+}
+
+type User struct {
+	Id      int64   `json:"id"`
+	Address Address `json:"address"`
+}
+
+type Address struct {
+	State string `json:"state"`
+	City  string `json:"city"`
+}
+
 var schemaConfig graphql.SchemaConfig = graphql.SchemaConfig{
-	Query: graphql.NewObject(q),
+	Query:    graphql.NewObject(q),
+	Mutation: graphql.NewObject(m),
 }
 
 // ここでスキーマを定義
@@ -69,6 +124,8 @@ func main() {
 	query = "{ id,name}"
 	executeQuery(query, schema)
 
+	query = "mutation { user(id: 100){ id, address{ state, city }}}"
+	executeQuery(query, schema)
 }
 
 func resolveID(p graphql.ResolveParams) (interface{}, error) {
