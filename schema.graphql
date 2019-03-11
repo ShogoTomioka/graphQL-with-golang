@@ -1,0 +1,13 @@
+type Query {
+  user(id: ID!): User
+}
+
+type User {
+  id: ID!
+  name: String!
+  groups(left: Boolean! = false): [Group!]!
+}
+
+type Group {
+  id: ID!
+}
