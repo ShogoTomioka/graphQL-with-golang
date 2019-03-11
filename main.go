@@ -14,7 +14,13 @@ var q graphql.ObjectConfig = graphql.ObjectConfig{
 	Name: "query",
 	Fields: graphql.Fields{
 		"id": &graphql.Field{
-			Type:    graphql.ID,
+			Type: graphql.ID,
+			// ここで引数部分を作成
+			Args: graphql.FieldConfigArgument{
+				"id": &graphql.ArgumentConfig{
+					Type: graphql.Int,
+				},
+			},
 			Resolve: resolveID,
 		},
 		"name": &graphql.Field{
@@ -57,7 +63,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	query := "{ id }"
+	query := "{ id(id: 100), name }"
 	executeQuery(query, schema)
 
 	query = "{ id,name}"
@@ -66,7 +72,7 @@ func main() {
 }
 
 func resolveID(p graphql.ResolveParams) (interface{}, error) {
-	return 1, nil
+	return p.Args["id"], nil
 }
 
 func resolveName(p graphql.ResolveParams) (interface{}, error) {
