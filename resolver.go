@@ -13,5 +13,8 @@ func (r *Resolver) Query() QueryResolver {
 type queryResolver struct{ *Resolver }
 
 func (r *queryResolver) User(ctx context.Context, id string) (*User, error) {
-	panic("not implemented")
+	return &User{
+		ID:   "10",
+		Name: "tanaka",
+	}, nil
 }
